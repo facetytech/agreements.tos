@@ -23,8 +23,15 @@ jobs:
     
     steps:
 
+    - name: Checkout private tools
+      uses: actions/checkout@v3
+      with:
+        repository: facetytech/ci
+        token: ${{ secrets.CI_TOKEN }}
+        path: ga
+
     - name: Checkout & Login & Upload
-      uses: facetytech/ci/other/deploy-agreements@main
+      uses: ga/other/deploy-agreements@main
       with:
         project-id: ${{ vars.GCP_DATA_PROJECT_ID }}
         project-num: ${{ secrets.GCP_DATA_PROJECT_NUM }}
@@ -35,6 +42,3 @@ jobs:
         from-path: ./text
         type: tos
         version: ${GITHUB_REF#refs/tags/}
-
-      env:
-        PRIVATE_REPO_TOKEN: ${{ secrets.CI_TOKEN }}
