@@ -10,7 +10,7 @@ on:
     tags:
       - '*'
 
-      
+
 
 jobs:
 
@@ -24,22 +24,50 @@ jobs:
     
     steps:
 
-    - name: Checkout private tools
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Checkout CI
       uses: actions/checkout@v3
       with:
         repository: facetytech/ci
         token: ${{ secrets.CI_TOKEN }}
         path: ga
 
-    - name: Checkout & Login & Upload
-      uses: ./ga/other/deploy-agreements
+  
+  
+    - name: Write version
+      shell: bash
+      run: |
+        echo ${GITHUB_REF#refs/tags/} > ./meta
+  
+    - name: Auth
+      uses: ./ga/gcp/auth/workload
       with:
         project-id: ${{ vars.GCP_DATA_PROJECT_ID }}
         project-num: ${{ secrets.GCP_DATA_PROJECT_NUM }}
         wif-pool: ${{ secrets.GCP_DATA_WIF_POOL }}
         wif-provider: ${{ secrets.GCP_DATA_WIF_PROVIDER_GITHUB }}
         service-account: ${{ secrets.GCP_PIPELINE_LOGIN }}
+  
+    - name: Copy Version
+      uses: ./ga/gcp/copy2gcs
+      with:
         target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
+        bucket-path: "tos/version/${GITHUB_REF#refs/tags/}"
         from-path: ./text
-        type: tos
-        version: ${GITHUB_REF#refs/tags/}
+  
+    - name: Copy Current
+      uses: ./ga/gcp/copy2gcs
+      with:
+        target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
+        bucket-path: tos/version/current
+        from-path: ./text
+  
+    - name: Copy Meta
+      uses: ./ga/gcp/copy2gcs
+      with:
+        target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
+        bucket-path: tos/meta
+        from-path: ./meta
+
