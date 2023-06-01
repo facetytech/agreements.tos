@@ -54,20 +54,20 @@ jobs:
       uses: ./ga/gcp/copy2gcs
       with:
         target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
-        bucket-path: "tos/version/${GITHUB_REF#refs/tags/}"
+        bucket-path: "/tos/version/${GITHUB_REF#refs/tags/}"
         from-path: ./text
   
     - name: Copy Current
       uses: ./ga/gcp/copy2gcs
       with:
         target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
-        bucket-path: tos/version/current
+        bucket-path: /tos/version/current
         from-path: ./text
   
     - name: Copy Meta
       uses: ./ga/gcp/copy2gcs
       with:
         target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
-        bucket-path: tos/meta
+        bucket-path: /tos/meta
         from-path: ./meta
 
