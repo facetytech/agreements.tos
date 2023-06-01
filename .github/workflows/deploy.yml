@@ -21,6 +21,7 @@ jobs:
       id-token: 'write'
 
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/')
     
     steps:
 
@@ -39,7 +40,7 @@ jobs:
     - name: Write version
       shell: bash
       run: |
-        echo ${GITHUB_REF#refs/tags/} > ./meta
+        echo ${GITHUB_REF#refs/tags/} > ./text/meta
   
     - name: Auth
       uses: ./ga/gcp/auth/workload
@@ -63,11 +64,3 @@ jobs:
         target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
         bucket-path: /tos/version/current
         from-path: ./text
-  
-    - name: Copy Meta
-      uses: ./ga/gcp/copy2gcs
-      with:
-        target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
-        bucket-path: /tos/meta
-        from-path: ./meta
-
