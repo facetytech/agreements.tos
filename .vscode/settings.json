@@ -1,0 +1,13 @@
+{
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": [
+            "file:///home/iurii/Projects/ft/agreements/tos/deploy.yml",
+            "file:///home/iurii/Projects/ft/agreements/tos/.github/workflow/deploy.yml"
+        ]
+    },
+    "cSpell.words": [
+        "FACETY",
+        "facetytect",
+        "omnicloudworld"
+    ]
+}

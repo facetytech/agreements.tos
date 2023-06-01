@@ -1,0 +1,40 @@
+
+name: To GCS
+
+
+on:
+
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+
+jobs:
+
+  upload:
+    
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+
+    - name: Checkout & Login & Upload
+      uses: facetytect/ci/other/deploy-agreements@main
+      with:
+        project-id: ${{ vars.GCP_DATA_PROJECT_ID }}
+        project-num: ${{ secrets.GCP_DATA_PROJECT_NUM }}
+        wif-pool: ${{ secrets.GCP_DATA_WIF_POOL }}
+        wif-provider: ${{ secrets.GCP_DATA_WIF_PROVIDER_GITHUB }}
+        service-account: ${{ secrets.GCP_PIPELINE_LOGIN }}
+        target-bucket: ${{ secrets.GCP_AGREEMENTS_BUCKET_FACETY }}
+        from-path: ./text
+        type: tos
+        version: ${GITHUB_REF#refs/tags/}
+
+      env:
+        PRIVATE_REPO_TOKEN: ${{ secrets.CI_TOKEN }}
