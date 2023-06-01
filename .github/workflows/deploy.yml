@@ -31,7 +31,7 @@ jobs:
         path: ga
 
     - name: Checkout & Login & Upload
-      uses: ga/other/deploy-agreements@main
+      uses: ./ga/other/deploy-agreements@main
       with:
         project-id: ${{ vars.GCP_DATA_PROJECT_ID }}
         project-num: ${{ secrets.GCP_DATA_PROJECT_NUM }}
